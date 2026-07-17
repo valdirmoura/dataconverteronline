@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react'
 import './App.css'
 import {
+  convertCsvToTable,
   convertJsonToTable,
   discoverJsonCollections,
   tableToCsv,
+  tableToJson,
   type ConversionTable,
   type JsonCollection,
 } from './lib/converter'
@@ -26,25 +28,37 @@ const demoData = {
   ],
 }
 
+const demoCsv = 'name,list,labels,done\nPlanejar migração,Em andamento,prioridade,false\nValidar arquivo convertido,Próximos passos,dados | teste,true'
+
+type ConversionDirection = 'json-to-csv' | 'csv-to-json'
+
 function formatCell(value: unknown) {
   if (value === null || value === undefined || value === '') return '—'
   return String(value)
 }
 
-function downloadCsv(table: ConversionTable, sourceName: string) {
-  const blob = new Blob(['\uFEFF', tableToCsv(table)], {
-    type: 'text/csv;charset=utf-8',
+function downloadOutput(
+  table: ConversionTable,
+  sourceName: string,
+  direction: ConversionDirection,
+) {
+  const isJsonToCsv = direction === 'json-to-csv'
+  const content = isJsonToCsv ? tableToCsv(table) : tableToJson(table)
+  const blob = new Blob(isJsonToCsv ? ['\uFEFF', content] : [content], {
+    type: isJsonToCsv ? 'text/csv;charset=utf-8' : 'application/json;charset=utf-8',
   })
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')
   anchor.href = url
-  anchor.download = `${sourceName.replace(/\.json$/i, '') || 'dados-convertidos'}.csv`
+  const baseName = sourceName.replace(/\.(json|csv)$/i, '') || 'dados-convertidos'
+  anchor.download = `${baseName}.${isJsonToCsv ? 'csv' : 'json'}`
   anchor.click()
   URL.revokeObjectURL(url)
 }
 
 function App() {
   const inputRef = useRef<HTMLInputElement>(null)
+  const [direction, setDirection] = useState<ConversionDirection>('json-to-csv')
   const [table, setTable] = useState<ConversionTable | null>(null)
   const [jsonInput, setJsonInput] = useState<unknown>(null)
   const [collections, setCollections] = useState<JsonCollection[]>([])
@@ -78,13 +92,29 @@ function App() {
     }
   }
 
-  async function processFile(file?: File) {
-    if (!file) return
-    if (!file.name.toLowerCase().endsWith('.json')) {
+  function processCsv(content: string, name: string) {
+    try {
+      setTable(convertCsvToTable(content))
+      setJsonInput(null)
+      setCollections([])
+      setFileName(name)
+      setError('')
+    } catch (caught) {
       setTable(null)
       setJsonInput(null)
       setCollections([])
-      setError('Nesta primeira versão, envie um arquivo com extensão .json.')
+      setError(caught instanceof Error ? caught.message : 'Não foi possível interpretar este arquivo.')
+    }
+  }
+
+  async function processFile(file?: File) {
+    if (!file) return
+    const expectedExtension = direction === 'json-to-csv' ? '.json' : '.csv'
+    if (!file.name.toLowerCase().endsWith(expectedExtension)) {
+      setTable(null)
+      setJsonInput(null)
+      setCollections([])
+      setError(`Para esta conversão, envie um arquivo com extensão ${expectedExtension}.`)
       return
     }
     if (file.size > 50 * 1024 * 1024) {
@@ -94,7 +124,9 @@ function App() {
       setError('O arquivo ultrapassa o limite atual de 50 MB.')
       return
     }
-    processJson(await file.text(), file.name)
+    const content = await file.text()
+    if (direction === 'json-to-csv') processJson(content, file.name)
+    else processCsv(content, file.name)
   }
 
   function reset() {
@@ -104,6 +136,14 @@ function App() {
     setFileName('')
     setError('')
     if (inputRef.current) inputRef.current.value = ''
+  }
+
+  const sourceFormat = direction === 'json-to-csv' ? 'JSON' : 'CSV'
+  const targetFormat = direction === 'json-to-csv' ? 'CSV' : 'JSON'
+
+  function toggleDirection() {
+    reset()
+    setDirection((current) => current === 'json-to-csv' ? 'csv-to-json' : 'json-to-csv')
   }
 
   return (
@@ -129,10 +169,21 @@ function App() {
         <section className="converter" aria-labelledby="converter-title">
           <div className="converter-heading">
             <div>
-              <p className="step">CONVERSOR 01</p>
-              <h2 id="converter-title">JSON → CSV</h2>
+              <p className="step">CONVERSÃO DE ARQUIVOS</p>
+              <h2 id="converter-title">
+                <span>{sourceFormat}</span>
+                <button
+                  className="direction-toggle"
+                  type="button"
+                  onClick={toggleDirection}
+                  aria-label={`Inverter direção: converter ${targetFormat} para ${sourceFormat}`}
+                  title="Inverter direção da conversão"
+                >
+                  <span aria-hidden="true">→</span>
+                </button>
+                <span>{targetFormat}</span>
+              </h2>
             </div>
-            <span className="status">FUNCIONAL</span>
           </div>
 
           {!table ? (
@@ -147,14 +198,14 @@ function App() {
                 void processFile(event.dataTransfer.files[0])
               }}
             >
-              <span className="file-glyph" aria-hidden="true">{'{ }'}</span>
-              <h3>Solte seu arquivo JSON aqui</h3>
+              <span className="file-glyph" aria-hidden="true">{sourceFormat === 'JSON' ? '{ }' : 'A,B'}</span>
+              <h3>Solte seu arquivo {sourceFormat} aqui</h3>
               <p>ou escolha um arquivo do seu computador</p>
               <input
                 ref={inputRef}
                 className="visually-hidden"
                 type="file"
-                accept="application/json,.json"
+                accept={direction === 'json-to-csv' ? 'application/json,.json' : 'text/csv,.csv'}
                 onChange={(event) => void processFile(event.target.files?.[0])}
               />
               <button className="primary-button" type="button" onClick={() => inputRef.current?.click()}>
@@ -163,7 +214,9 @@ function App() {
               <button
                 className="text-button"
                 type="button"
-                onClick={() => processJson(JSON.stringify(demoData), 'exemplo.json')}
+                onClick={() => direction === 'json-to-csv'
+                  ? processJson(JSON.stringify(demoData), 'exemplo.json')
+                  : processCsv(demoCsv, 'exemplo.csv')}
               >
                 Testar com dados de exemplo
               </button>
@@ -172,7 +225,7 @@ function App() {
             <div className="result-panel">
               <div className="result-summary" aria-live="polite">
                 <div>
-                  <span className="result-kicker">ARQUIVO ANALISADO</span>
+                  <span className="result-kicker">{sourceFormat} ANALISADO · PRONTO PARA {targetFormat}</span>
                   <strong>{fileName}</strong>
                   <span>{table.rows.length} linhas · {table.columns.length} colunas</span>
                   {collections.length > 1 && (
@@ -218,8 +271,8 @@ function App() {
                 </table>
               </div>
               {table.rows.length > 8 && <p className="preview-note">Prévia das primeiras 8 linhas.</p>}
-              <button className="download-button" type="button" onClick={() => downloadCsv(table, fileName)}>
-                Baixar CSV <span aria-hidden="true">↓</span>
+              <button className="download-button" type="button" onClick={() => downloadOutput(table, fileName, direction)}>
+                Baixar {targetFormat} <span aria-hidden="true">↓</span>
               </button>
             </div>
           )}
@@ -240,7 +293,7 @@ function App() {
       </main>
 
       <footer>
-        <span>Data Converter Online · MVP 0.1</span>
+        <span>Data Converter Online · Versão beta</span>
         <span>Conversão local · nenhum upload para servidor</span>
       </footer>
     </div>

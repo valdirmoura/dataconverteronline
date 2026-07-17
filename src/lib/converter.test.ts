@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
+  convertCsvToTable,
   convertJsonToTable,
   discoverJsonCollections,
   tableToCsv,
+  tableToJson,
 } from './converter'
 
 describe('JSON collection discovery', () => {
@@ -75,5 +77,32 @@ describe('tableToCsv', () => {
     })
 
     expect(csv).toBe('value\r\n"\'\t=CMD()"')
+  })
+})
+describe('convertCsvToTable', () => {
+  it('parses quoted CSV cells, escaped quotes and line breaks', () => {
+    const table = convertCsvToTable('name,note\r\nAna,"texto, com ""aspas"""\r\nBeto,"duas\nlinhas"')
+
+    expect(table.columns).toEqual(['name', 'note'])
+    expect(table.rows).toEqual([
+      { name: 'Ana', note: 'texto, com "aspas"' },
+      { name: 'Beto', note: 'duas\nlinhas' },
+    ])
+  })
+
+  it('detects semicolon delimiters and preserves values as strings', () => {
+    const table = convertCsvToTable('id;active\n001;true')
+    expect(table.rows).toEqual([{ id: '001', active: 'true' }])
+  })
+
+  it('renames empty and duplicate headers', () => {
+    const table = convertCsvToTable('name,name,\nAna,A.,extra')
+    expect(table.columns).toEqual(['name', 'name_2', 'coluna_3'])
+    expect(table.warnings).toHaveLength(1)
+  })
+
+  it('serializes table rows as formatted JSON', () => {
+    const table = convertCsvToTable('name,city\nAna,Contagem')
+    expect(tableToJson(table)).toBe('[\n  {\n    "name": "Ana",\n    "city": "Contagem"\n  }\n]')
   })
 })
