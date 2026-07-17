@@ -343,6 +343,50 @@ footer {
   border: 0;
 }
 
+.collection-picker {
+  display: grid;
+  gap: 7px;
+  margin-top: 8px;
+  color: var(--green-dark);
+  font: 700 11px/1.3 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.collection-picker select {
+  min-height: 44px;
+  max-width: min(520px, 100%);
+  padding: 0 36px 0 12px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: var(--paper-bright);
+  font: 500 14px/1.3 var(--mono);
+  text-transform: none;
+}
+
+.warning-panel {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  color: #583414;
+  border: 1px solid #c98542;
+  background: #fff1d8;
+}
+
+.warning-panel strong {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.warning-panel ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.warning-panel li + li {
+  margin-top: 4px;
+}
 @media (max-width: 720px) {
   .site-header {
     align-items: flex-start;

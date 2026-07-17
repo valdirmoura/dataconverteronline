@@ -2,8 +2,10 @@ import { useRef, useState } from 'react'
 import './App.css'
 import {
   convertJsonToTable,
+  discoverJsonCollections,
   tableToCsv,
   type ConversionTable,
+  type JsonCollection,
 } from './lib/converter'
 
 const demoData = {
@@ -44,6 +46,8 @@ function downloadCsv(table: ConversionTable, sourceName: string) {
 function App() {
   const inputRef = useRef<HTMLInputElement>(null)
   const [table, setTable] = useState<ConversionTable | null>(null)
+  const [jsonInput, setJsonInput] = useState<unknown>(null)
+  const [collections, setCollections] = useState<JsonCollection[]>([])
   const [fileName, setFileName] = useState('')
   const [error, setError] = useState('')
   const [isDragging, setIsDragging] = useState(false)
@@ -51,15 +55,25 @@ function App() {
   function processJson(content: string, name: string) {
     try {
       const parsed = JSON.parse(content) as unknown
-      setTable(convertJsonToTable(parsed))
+      const availableCollections = discoverJsonCollections(parsed)
+      if (!availableCollections.length) {
+        throw new Error('Não encontramos uma lista preenchida de objetos nesse arquivo.')
+      }
+      setJsonInput(parsed)
+      setCollections(availableCollections)
+      setTable(convertJsonToTable(parsed, availableCollections[0].path))
       setFileName(name)
       setError('')
     } catch (caught) {
       setTable(null)
+      setJsonInput(null)
+      setCollections([])
       setError(
-        caught instanceof Error
-          ? caught.message
-          : 'Não foi possível interpretar este arquivo.',
+        caught instanceof SyntaxError
+          ? 'O arquivo não contém um JSON válido. Verifique se o download foi concluído e tente novamente.'
+          : caught instanceof Error
+            ? caught.message
+            : 'Não foi possível interpretar este arquivo.',
       )
     }
   }
@@ -67,7 +81,17 @@ function App() {
   async function processFile(file?: File) {
     if (!file) return
     if (!file.name.toLowerCase().endsWith('.json')) {
+      setTable(null)
+      setJsonInput(null)
+      setCollections([])
       setError('Nesta primeira versão, envie um arquivo com extensão .json.')
+      return
+    }
+    if (file.size > 50 * 1024 * 1024) {
+      setTable(null)
+      setJsonInput(null)
+      setCollections([])
+      setError('O arquivo ultrapassa o limite atual de 50 MB.')
       return
     }
     processJson(await file.text(), file.name)
@@ -75,6 +99,8 @@ function App() {
 
   function reset() {
     setTable(null)
+    setJsonInput(null)
+    setCollections([])
     setFileName('')
     setError('')
     if (inputRef.current) inputRef.current.value = ''
@@ -148,10 +174,34 @@ function App() {
                 <div>
                   <span className="result-kicker">ARQUIVO ANALISADO</span>
                   <strong>{fileName}</strong>
-                  <span>{table.rows.length} linhas · {table.columns.length} colunas · origem {table.sourcePath}</span>
+                  <span>{table.rows.length} linhas · {table.columns.length} colunas</span>
+                  {collections.length > 1 && (
+                    <label className="collection-picker">
+                      Coleção do JSON
+                      <select
+                        value={table.sourcePath}
+                        onChange={(event) => {
+                          if (jsonInput) setTable(convertJsonToTable(jsonInput, event.target.value))
+                        }}
+                      >
+                        {collections.map((collection) => (
+                          <option key={collection.path} value={collection.path}>
+                            {collection.path} — {collection.recordCount} registros
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
                 </div>
                 <button className="secondary-button" type="button" onClick={reset}>Trocar arquivo</button>
               </div>
+
+              {table.warnings.length > 0 && (
+                <div className="warning-panel" role="status">
+                  <strong>Antes de baixar</strong>
+                  <ul>{table.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>
+                </div>
+              )}
 
               <div className="table-wrap" tabIndex={0} aria-label="Prévia dos dados convertidos">
                 <table>
