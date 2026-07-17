@@ -4,7 +4,7 @@
 
 O Data Converter Online é uma ferramenta web para converter dados estruturados entre formatos comuns sem exigir programação. O produto nasce de um caso real: transformar um export do Trello em uma planilha importável pelo Asana, preservando o máximo possível do contexto original.
 
-O nome é provisório. O projeto será um produto independente do Anmaru, embora possa seguir os padrões corporativos e de interface da empresa.
+O nome confirmado é **Data Converter Online**. O projeto é um produto independente do Anmaru e pode seguir seus padrões corporativos e de interface enquanto não houver uma identidade própria.
 
 ## Classificação do projeto
 
@@ -18,7 +18,7 @@ Ferramentas exportam dados em formatos que outras plataformas não aceitam. Conv
 
 ## Proposta de valor
 
-Converter arquivos com uma experiência simples, explicando perdas e permitindo adequar o resultado ao destino. A diferenciação não será apenas “JSON para CSV”, mas “dados de uma origem para um arquivo realmente utilizável em outra ferramenta”.
+Converter arquivos com uma experiência simples, explicando perdas e permitindo adequar o resultado ao destino. A diferenciação não será apenas “JSON para CSV”, mas “dados de uma origem para um arquivo realmente utilizável em outra ferramenta”. A proposta central é: **Seus dados, no formato que você precisa.**
 
 ## Objetivos iniciais
 
@@ -84,7 +84,7 @@ As pastas de implementação da aplicação serão criadas somente depois da val
 
 ## Status
 
-Planejamento inicial criado. As decisões de nome, modelo de negócio, limites gratuitos e estratégia de processamento ainda precisam ser validadas.
+MVP JSON → CSV em implementação. Nome e proposta de valor confirmados; modelo de negócio, limites gratuitos e estratégia de processamento em servidor ainda precisam ser validados.
 
 ## Próximos passos
 
@@ -100,4 +100,3 @@ Planejamento inicial criado. As decisões de nome, modelo de negócio, limites g
 - A matriz de formatos é a fonte de verdade das conversões suportadas.
 - Requisitos validados devem ser ligados a métricas e testes.
 - Documentos obsoletos devem ser movidos para `archive/`, sem apagar o histórico.
-

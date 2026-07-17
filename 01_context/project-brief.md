@@ -2,7 +2,9 @@
 
 ## Contexto
 
-O projeto surgiu durante a migração de um quadro do Trello para o Asana. O Trello exportou JSON, enquanto o Asana aceitava CSV, XLSX e TXT. Uma transformação simples de formato não bastava: era necessário mapear listas, cartões, descrições, datas, etiquetas, responsáveis e checklists para a estrutura esperada pelo destino.
+O projeto surgiu durante a migração de um quadro do Trello para o Asana. No plano gratuito utilizado, o Trello disponibilizava o export em JSON, enquanto outros formatos dependiam de um plano pago. O Asana aceitava CSV, XLSX e TXT. Uma transformação simples de formato não bastava: era necessário mapear listas, cartões, descrições, datas, etiquetas, responsáveis e checklists para a estrutura esperada pelo destino.
+
+A experiência revelou uma barreira mais ampla: pessoas têm acesso legítimo aos próprios dados, mas nem sempre aos formatos necessários para continuar usando esses dados em outra ferramenta. A IA reduz o custo de criar utilidades específicas e abre espaço para democratizar esse acesso.
 
 ## Hipótese de problema
 
@@ -14,7 +16,9 @@ Uma ferramenta web que detecta a estrutura do arquivo, mostra uma prévia, permi
 
 ## Proposta de valor
 
-“Converta seus dados para um arquivo que a ferramenta de destino realmente consiga usar, com prévia, mapeamento e avisos claros sobre o que será preservado.”
+**Seus dados, no formato que você precisa.**
+
+A ferramenta transforma arquivos que o usuário já pode exportar legitimamente. Ela não acessa recursos pagos nem contorna controles das plataformas.
 
 ## Segmento inicial
 
@@ -73,4 +77,3 @@ Profissionais e pequenas equipes migrando dados entre ferramentas SaaS, começan
 - XML vulnerável, arquivos compactados ou conteúdo inesperado causarem ataques.
 - Usuários presumirem reversibilidade sem perda.
 - Presets quebrarem quando plataformas alterarem seus importadores.
-
