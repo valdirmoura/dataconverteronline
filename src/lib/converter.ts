@@ -165,3 +165,124 @@ export function tableToCsv(table: ConversionTable): string {
 
   return [header, ...rows].join('\r\n')
 }
+function countDelimiter(line: string, delimiter: string): number {
+  let count = 0
+  let quoted = false
+
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index]
+    if (character === '"') {
+      if (quoted && line[index + 1] === '"') index += 1
+      else quoted = !quoted
+    } else if (!quoted && character === delimiter) {
+      count += 1
+    }
+  }
+
+  return count
+}
+
+function detectCsvDelimiter(content: string): string {
+  const sample = content.split(/\r?\n/, 1)[0] ?? ''
+  const delimiters = [',', ';', '\t']
+  return delimiters.reduce((best, current) =>
+    countDelimiter(sample, current) > countDelimiter(sample, best) ? current : best,
+  )
+}
+
+function parseCsvRows(content: string, delimiter: string): string[][] {
+  const rows: string[][] = []
+  let row: string[] = []
+  let cell = ''
+  let quoted = false
+
+  for (let index = 0; index < content.length; index += 1) {
+    const character = content[index]
+
+    if (character === '"') {
+      if (quoted && content[index + 1] === '"') {
+        cell += '"'
+        index += 1
+      } else {
+        quoted = !quoted
+      }
+      continue
+    }
+
+    if (!quoted && character === delimiter) {
+      row.push(cell)
+      cell = ''
+      continue
+    }
+
+    if (!quoted && (character === '\n' || character === '\r')) {
+      row.push(cell)
+      rows.push(row)
+      row = []
+      cell = ''
+      if (character === '\r' && content[index + 1] === '\n') index += 1
+      continue
+    }
+
+    cell += character
+  }
+
+  if (quoted) throw new Error('O CSV contém aspas abertas sem fechamento.')
+  if (cell || row.length) {
+    row.push(cell)
+    rows.push(row)
+  }
+
+  return rows
+}
+
+function normalizeHeaders(headers: string[]): { columns: string[]; renamed: boolean } {
+  const used = new Set<string>()
+  let renamed = false
+  const columns = headers.map((header, index) => {
+    const base = header.trim() || `coluna_${index + 1}`
+    let candidate = base
+    let suffix = 2
+    while (used.has(candidate)) {
+      candidate = `${base}_${suffix}`
+      suffix += 1
+    }
+    if (candidate !== header) renamed = true
+    used.add(candidate)
+    return candidate
+  })
+  return { columns, renamed }
+}
+
+export function convertCsvToTable(input: string): ConversionTable {
+  const content = input.replace(/^\uFEFF/, '')
+  if (!content.trim()) throw new Error('O arquivo CSV está vazio.')
+
+  const delimiter = detectCsvDelimiter(content)
+  const parsedRows = parseCsvRows(content, delimiter)
+  if (parsedRows.length < 2) {
+    throw new Error('O CSV precisa ter um cabeçalho e pelo menos uma linha de dados.')
+  }
+
+  const { columns, renamed } = normalizeHeaders(parsedRows[0])
+  const dataRows = parsedRows.slice(1)
+  if (dataRows.length > MAX_ROWS) {
+    throw new Error(`O arquivo ultrapassa o limite de ${MAX_ROWS.toLocaleString('pt-BR')} linhas.`)
+  }
+
+  const warnings: string[] = []
+  if (renamed) warnings.push('Cabeçalhos vazios ou repetidos foram renomeados para gerar chaves JSON válidas.')
+  if (dataRows.some((row) => row.length !== columns.length)) {
+    warnings.push('Algumas linhas têm uma quantidade de células diferente do cabeçalho; valores ausentes ficaram vazios.')
+  }
+
+  const rows = dataRows.map((values) =>
+    Object.fromEntries(columns.map((column, index) => [column, values[index] ?? ''])) as TableRow,
+  )
+
+  return { columns, rows, sourcePath: '$', warnings }
+}
+
+export function tableToJson(table: ConversionTable): string {
+  return JSON.stringify(table.rows, null, 2)
+}

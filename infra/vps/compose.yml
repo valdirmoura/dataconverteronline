@@ -1,0 +1,13 @@
+services:
+  vira:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vira
+    restart: unless-stopped
+    networks:
+      - vps_public
+
+networks:
+  vps_public:
+    external: true
