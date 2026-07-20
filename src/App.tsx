@@ -1,5 +1,6 @@
 import './App.css'
 import { UnifiedConverter } from './UnifiedConverter'
+import { Glossary } from './Glossary'
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
         </section>
 
         <UnifiedConverter />
+
+        <Glossary />
 
         <section className="manifesto" aria-labelledby="manifesto-title">
           <p className="eyebrow">POR QUE EXISTE</p>
