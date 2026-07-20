@@ -758,3 +758,35 @@ footer {
     flex-direction: column;
   }
 }
+.image-drop-hint {
+  display: grid;
+  min-height: 280px;
+  margin: 18px 0 16px;
+  place-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+  border: 1px dashed var(--line);
+  background: var(--paper-bright);
+}
+
+.image-drop-hint .file-glyph {
+  justify-self: center;
+}
+
+.image-drop-hint p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.image-result {
+  display: block;
+  width: 100%;
+  min-height: 260px;
+  max-height: 360px;
+  margin: 18px 0 16px;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  background: var(--paper-bright);
+}
