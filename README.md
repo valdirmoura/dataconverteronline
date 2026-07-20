@@ -1,10 +1,10 @@
-# Data Converter Online
+# Vira
 
 ## Visão geral
 
-O Data Converter Online é uma ferramenta web para converter dados estruturados entre formatos comuns sem exigir programação. O produto nasce de um caso real: transformar um export do Trello em uma planilha importável pelo Asana, preservando o máximo possível do contexto original.
+Vira é uma ferramenta web para transformar arquivos entre formatos comuns sem exigir programação. O produto nasce de um caso real: transformar um export do Trello em uma planilha importável pelo Asana, preservando o máximo possível do contexto original.
 
-O nome confirmado é **Data Converter Online**. O projeto é um produto independente do Anmaru e pode seguir seus padrões corporativos e de interface enquanto não houver uma identidade própria.
+O nome confirmado é **Vira**. O projeto é um produto independente da Anmaru, com identidade própria e origem local-first.
 
 ## Classificação do projeto
 

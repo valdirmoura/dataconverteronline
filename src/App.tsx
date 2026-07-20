@@ -149,9 +149,9 @@ function App() {
   return (
     <div className="app-shell">
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="Data Converter Online — início">
-          <span className="brand-mark" aria-hidden="true">D/C</span>
-          <span>Data Converter Online</span>
+        <a className="brand" href="#top" aria-label="Vira — início">
+          <span className="brand-mark" aria-hidden="true">V/</span>
+          <span>Vira</span>
         </a>
         <span className="privacy-note"><span aria-hidden="true">●</span> Seus dados não saem do navegador</span>
       </header>
@@ -293,7 +293,7 @@ function App() {
       </main>
 
       <footer>
-        <span>Data Converter Online · Versão beta</span>
+        <span>Vira · Versão beta</span>
         <span>Conversão local · nenhum upload para servidor</span>
       </footer>
     </div>
