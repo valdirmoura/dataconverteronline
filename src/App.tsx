@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import './App.css'
+import { StructuredTools } from './StructuredTools'
 import {
   convertCsvToTable,
   convertJsonToTable,
@@ -278,6 +279,8 @@ function App() {
           )}
           {error && <p className="error-message" role="alert">{error}</p>}
         </section>
+
+        <StructuredTools />
 
         <section className="manifesto" aria-labelledby="manifesto-title">
           <p className="eyebrow">POR QUE EXISTE</p>
