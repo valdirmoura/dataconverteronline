@@ -875,3 +875,129 @@ footer {
     padding-bottom: 52px;
   }
 }
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.header-nav > a,
+footer a {
+  color: var(--green-dark);
+  font: 700 12px/1.2 var(--mono);
+  text-decoration-color: var(--line);
+  text-underline-offset: 4px;
+}
+
+.glossary-page {
+  padding-top: 56px;
+}
+
+.glossary-page .glossary {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.suggestion {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(340px, 1.15fr);
+  gap: 56px;
+  margin: 0 0 96px;
+  padding: 34px;
+  color: var(--paper-bright);
+  border: 1px solid var(--green-dark);
+  background: var(--green-dark);
+  box-shadow: 8px 8px 0 var(--green);
+}
+
+.suggestion .eyebrow,
+.suggestion h2,
+.suggestion p {
+  color: inherit;
+}
+
+.suggestion h2 {
+  max-width: 530px;
+  margin: 8px 0 14px;
+  font-family: var(--sans);
+  font-size: clamp(2rem, 3.5vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.suggestion-copy > p:not(.eyebrow) {
+  max-width: 470px;
+  margin: 0;
+  color: #d8e5dc;
+}
+
+.suggestion-form {
+  display: grid;
+  gap: 16px;
+}
+
+.suggestion-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--paper-bright);
+  font: 700 12px/1.2 var(--mono);
+  letter-spacing: 0.04em;
+}
+
+.suggestion-form label span {
+  color: #b7cec0;
+  font-weight: 500;
+}
+
+.suggestion-form input,
+.suggestion-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px;
+  color: var(--ink);
+  border: 1px solid var(--paper-bright);
+  border-radius: 0;
+  background: var(--paper-bright);
+  font: 500 1rem/1.4 var(--sans);
+}
+
+.suggestion-form textarea {
+  min-height: 124px;
+  resize: vertical;
+}
+
+.suggestion-form .primary-button {
+  justify-self: start;
+  color: var(--green-dark);
+  border-color: var(--paper-bright);
+  background: var(--paper-bright);
+  box-shadow: 4px 4px 0 #0b281f;
+}
+
+.form-note {
+  margin: 0;
+  color: #b7cec0;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 720px) {
+  .header-nav {
+    gap: 12px;
+  }
+
+  .privacy-note {
+    display: none;
+  }
+
+  .glossary-page {
+    padding-top: 36px;
+  }
+
+  .suggestion {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 72px;
+    padding: 24px;
+  }
+}
