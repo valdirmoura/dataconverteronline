@@ -881,10 +881,11 @@ footer {
   gap: 22px;
 }
 
-.header-nav > a,
-footer a {
+.header-nav > a {
   color: var(--green-dark);
   font: 700 12px/1.2 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   text-decoration-color: var(--line);
   text-underline-offset: 4px;
 }
@@ -1004,4 +1005,16 @@ footer a {
 .nav-divider {
   color: var(--line);
   font: 700 12px/1 var(--mono);
+}
+footer {
+  justify-content: flex-start;
+  gap: 10px;
+  text-transform: none;
+}
+
+footer a {
+  color: var(--green-dark);
+  font: inherit;
+  text-decoration-color: var(--line);
+  text-underline-offset: 4px;
 }

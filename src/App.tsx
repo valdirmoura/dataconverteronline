@@ -8,6 +8,7 @@ type NavigationProps = { isGlossaryPage: boolean }
 function Header({ isGlossaryPage }: NavigationProps) {
   const destination = isGlossaryPage ? '/' : '/glossario'
   const label = isGlossaryPage ? 'CONVERSOR' : 'GLOSSÁRIO'
+  const suggestionTarget = isGlossaryPage ? '/#sugestoes' : '#sugestoes'
 
   return (
     <header className="site-header">
@@ -17,20 +18,23 @@ function Header({ isGlossaryPage }: NavigationProps) {
       </a>
       <nav className="header-nav" aria-label="Navegação principal">
         <a href={destination}>{label}</a>
-        <span className="nav-divider" aria-hidden="true">|</span>`r`n        <a href={isGlossaryPage ? "/#sugestoes" : "#sugestoes"}>INDIQUE UMA CONVERSÃO</a>
+        <span className="nav-divider" aria-hidden="true">|</span>
+        <a href={suggestionTarget}>INDIQUE UMA CONVERSÃO</a>
       </nav>
     </header>
   )
 }
 
-function Footer({ isGlossaryPage }: NavigationProps) {
-  const destination = isGlossaryPage ? '/' : '/glossario'
-  const label = isGlossaryPage ? 'CONVERSOR' : 'GLOSSÁRIO'
-
+function Footer() {
   return (
     <footer>
       <span>Vira · Versão beta</span>
-      <span><a href={destination}>{label}</a> · Conversão local</span>
+      <span aria-hidden="true">|</span>
+      <span>Conversão local</span>
+      <span aria-hidden="true">|</span>
+      <span>© 2026</span>
+      <span aria-hidden="true">|</span>
+      <span>feito por <a href="https://anmaru.com/" target="_blank" rel="noreferrer">anmarū</a></span>
     </footer>
   )
 }
@@ -64,7 +68,7 @@ function App() {
           <SuggestionForm />
         </main>
       )}
-      <Footer isGlossaryPage={isGlossaryPage} />
+      <Footer />
     </div>
   )
 }
