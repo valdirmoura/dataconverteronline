@@ -3,7 +3,12 @@ import { Glossary } from './Glossary'
 import { SuggestionForm } from './SuggestionForm'
 import { UnifiedConverter } from './UnifiedConverter'
 
-function Header() {
+type NavigationProps = { isGlossaryPage: boolean }
+
+function Header({ isGlossaryPage }: NavigationProps) {
+  const destination = isGlossaryPage ? '/' : '/glossario'
+  const label = isGlossaryPage ? 'CONVERSOR' : 'GLOSSÁRIO'
+
   return (
     <header className="site-header">
       <a className="brand" href="/" aria-label="Vira — início">
@@ -11,18 +16,21 @@ function Header() {
         <span>Vira</span>
       </a>
       <nav className="header-nav" aria-label="Navegação principal">
-        <a href="/glossario">Glossário</a>
+        <a href={destination}>{label}</a>
         <span className="privacy-note"><span aria-hidden="true">●</span> Seus arquivos não saem do navegador</span>
       </nav>
     </header>
   )
 }
 
-function Footer() {
+function Footer({ isGlossaryPage }: NavigationProps) {
+  const destination = isGlossaryPage ? '/' : '/glossario'
+  const label = isGlossaryPage ? 'CONVERSOR' : 'GLOSSÁRIO'
+
   return (
     <footer>
       <span>Vira · Versão beta</span>
-      <span><a href="/glossario">Glossário de formatos</a> · Conversão local</span>
+      <span><a href={destination}>{label}</a> · Conversão local</span>
     </footer>
   )
 }
@@ -32,13 +40,13 @@ function App() {
 
   return (
     <div className="app-shell">
-      <Header />
+      <Header isGlossaryPage={isGlossaryPage} />
       {isGlossaryPage ? (
         <main id="top" className="glossary-page"><Glossary /></main>
       ) : (
         <main id="top">
           <section className="hero-copy" aria-labelledby="page-title">
-            <p className="eyebrow">UTILIDADE DIGITAL · ACESSO ABERTO</p>
+            <p className="eyebrow">SEUS ARQUIVOS NÃO SAEM DO NAVEGADOR</p>
             <h1 id="page-title">Seus dados, no formato que você precisa.</h1>
             <p className="lede">Transforme um arquivo que você já possui em um formato realmente útil — sem assinatura extra e sem precisar programar.</p>
           </section>
@@ -56,7 +64,7 @@ function App() {
           <SuggestionForm />
         </main>
       )}
-      <Footer />
+      <Footer isGlossaryPage={isGlossaryPage} />
     </div>
   )
 }

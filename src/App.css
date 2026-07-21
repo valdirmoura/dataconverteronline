@@ -74,9 +74,9 @@ footer {
 .hero-copy {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-  gap: 12px 48px;
+  gap: 10px 32px;
   align-items: end;
-  padding: 22px 0 24px;
+  padding: 18px 0 20px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -97,7 +97,7 @@ footer {
   max-width: 720px;
   margin: 0;
   font-family: var(--sans);
-  font-size: clamp(2.65rem, 4.4vw, 4.1rem);
+  font-size: clamp(2.25rem, 3.5vw, 3.2rem);
   font-weight: 600;
   line-height: 0.94;
   letter-spacing: -0.06em;
