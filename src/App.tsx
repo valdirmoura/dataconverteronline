@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import './App.css'
 import { Glossary } from './Glossary'
 import { SuggestionForm } from './SuggestionForm'
@@ -30,9 +31,9 @@ function Footer() {
     <footer>
       <span>Vira · Versão beta</span>
       <span aria-hidden="true">|</span>
-      <span>Conversão local</span>
-      <span aria-hidden="true">|</span>
       <span>© 2026</span>
+      <span aria-hidden="true">|</span>
+      <span>Conversão local</span>
       <span aria-hidden="true">|</span>
       <span>feito por <a href="https://anmaru.com/" target="_blank" rel="noreferrer">anmarū</a></span>
     </footer>
@@ -41,6 +42,14 @@ function Footer() {
 
 function App() {
   const isGlossaryPage = window.location.pathname.replace(/\/+$/, '') === '/glossario'
+
+  useEffect(() => {
+    if (isGlossaryPage || window.location.hash !== '#sugestoes') return
+    const timer = window.setTimeout(() => {
+      document.getElementById('sugestoes')?.scrollIntoView({ behavior: 'smooth' })
+    }, 0)
+    return () => window.clearTimeout(timer)
+  }, [isGlossaryPage])
 
   return (
     <div className="app-shell">
