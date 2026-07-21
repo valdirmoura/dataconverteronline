@@ -29,13 +29,9 @@ function Header({ isGlossaryPage }: NavigationProps) {
 function Footer() {
   return (
     <footer>
-      <span>Vira · Versão beta</span>
-      <span aria-hidden="true">|</span>
-      <span>© 2026</span>
+      <span>Vira · Versão beta · © 2026 · feito por <a href="https://anmaru.com/" target="_blank" rel="noreferrer">anmarū</a></span>
       <span aria-hidden="true">|</span>
       <span>Conversão local</span>
-      <span aria-hidden="true">|</span>
-      <span>feito por <a href="https://anmaru.com/" target="_blank" rel="noreferrer">anmarū</a></span>
     </footer>
   )
 }
