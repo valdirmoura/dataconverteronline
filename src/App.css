@@ -1001,3 +1001,7 @@ footer a {
     padding: 24px;
   }
 }
+.nav-divider {
+  color: var(--line);
+  font: 700 12px/1 var(--mono);
+}

@@ -17,7 +17,7 @@ function Header({ isGlossaryPage }: NavigationProps) {
       </a>
       <nav className="header-nav" aria-label="Navegação principal">
         <a href={destination}>{label}</a>
-        <span className="privacy-note"><span aria-hidden="true">●</span> Seus arquivos não saem do navegador</span>
+        <span className="nav-divider" aria-hidden="true">|</span>`r`n        <a href={isGlossaryPage ? "/#sugestoes" : "#sugestoes"}>INDIQUE UMA CONVERSÃO</a>
       </nav>
     </header>
   )

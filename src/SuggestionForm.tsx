@@ -1,6 +1,6 @@
 export function SuggestionForm() {
   return (
-    <section className="suggestion" aria-labelledby="suggestion-title">
+    <section id="sugestoes" className="suggestion" aria-labelledby="suggestion-title">
       <div className="suggestion-copy">
         <p className="eyebrow">PRÓXIMOS FORMATOS</p>
         <h2 id="suggestion-title">Não encontrou o conversor que precisava?</h2>
